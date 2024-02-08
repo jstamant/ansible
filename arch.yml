@@ -1,0 +1,218 @@
+- hosts: localhost
+  # become: true
+
+  pre_tasks:
+    # - name: Full system upgrade
+    #   pacman:
+    #     update_cache: true
+    #     upgrade: true
+    #   become: true
+
+  tasks:
+    - name: Clone dotfiles
+      git:
+        repo: https://github.com/jstamant/dotfiles.git
+        dest: "{{ lookup('env', 'HOME') }}/.dotfiles"
+        update: false
+
+    - name: Clone Spacemacs
+      git:
+        repo: https://github.com/syl20bnr/spacemacs.git
+        dest: "{{ lookup('env', 'HOME') }}/.emacs.d"
+        update: false
+
+    - name: Install alacritty and its themes
+      block:
+        - name: Install alacritty
+          pacman:
+            name:
+              - alacritty
+        - name: Install alacritty themes
+          git:
+            repo: https://github.com/alacritty/alacritty-theme.git
+            dest: "{{ lookup('env', 'XDG_CONFIG_HOME') }}/alacritty/alacritty-theme"
+            update: false
+
+    - name: Install productivity apps
+      pacman:
+        name:
+          - emacs
+          - tmux
+
+    - name: Install Xorg
+      pacman:
+        name:
+          - xorg-server
+          - xorg-apps
+          - xorg-xinit
+
+    - name: Install video drivers (for newer ~gen13 Intel)
+      pacman:
+        name:
+          - mesa
+          - vulkan-intel
+
+    - name: Install video drivers (for newer ~gen13 Intel)
+      pacman:
+        name: xf86-video-intel
+        state: absent
+        extra_args: --recursive
+
+    - name: Copy Xorg configuration files
+      copy:
+        src: "xorg/"
+        dest: "/etc/X11/xorg.conf.d/"
+
+    - name: Install awesome window-manager, dependencies, and related apps
+      block:
+        - name: Install window-manager-related packages
+          pacman:
+            name:
+              - autorandr
+              - awesome
+              - sxhkd
+        - name: Install awesome-wm-widgets repo
+          git:
+            repo: https://github.com/streetturtle/awesome-wm-widgets.git
+            dest: "{{ lookup('env', 'XDG_CONFIG_HOME') }}/awesome/awesome-wm-widgets"
+            update: false
+        - name: Install lain repo
+          git:
+            repo: https://github.com/lcpz/lain.git
+            dest: "{{ lookup('env', 'XDG_CONFIG_HOME') }}/awesome/lain"
+            update: false
+
+    - name: Install Wayland compositor and related apps
+      # TODO incomplete
+      pacman:
+        name:
+          - hyprland
+          - waybar
+
+    - name: Install tray apps
+      pacman:
+        name:
+          - blueman
+          - network-manager-applet
+          - udiskie
+
+    - name: Install fonts
+      pacman:
+        name:
+          - nerd-fonts
+          - noto-fonts
+          - noto-fonts-emoji
+          - ttf-font-awesome
+
+# Services that have been enabled from default
+
+# cups.path                            enabled         disabled
+# avahi-daemon.service                 enabled         disabled
+# bluetooth.service                    enabled         disabled
+# cpupower-gui-helper.service          enabled         disabled
+# cpupower-gui.service                 enabled         disabled
+# cpupower.service                     enabled         disabled
+# cups.service                         enabled         disabled
+# greetd.service                       enabled         disabled
+# NetworkManager-dispatcher.service    enabled         disabled
+# NetworkManager-wait-online.service   enabled         disabled
+# NetworkManager.service               enabled         disabled
+# tlp.service                          enabled         disabled
+# avahi-daemon.socket                  enabled         disabled
+# cups.socket                          enabled         disabled
+# reflector.timer                      enabled         disabled
+# ntpd.service
+
+# Explicity installed packages on 2023-11-14
+# pacman -Qeqn | sed 's/^/# /' >> arch.yml
+# or -m flag for foreign
+
+# Native packages (from pacman)
+#
+# atool w3m highlight imagemagick ffmpegthumbnailer libcaca mediainfo odt2txt perl-image-exiftool, optional deps for ranger
+# alsa-utils
+# ansible
+# ansible-core
+# base
+# base-devel
+# brightnessctl, needs user to be in groups input and video
+# clang , required for c-c++ lsp in emacs
+# cpupower
+# cups
+# cups-pdf
+# discord
+# dmenu
+# ethtool
+# fd
+# feh
+# file-roller
+# firefox
+# fzf
+# git
+# gnome-calculator
+# greetd
+# greetd-tuigreet
+# htop
+# intel-ucode
+# libreoffice-fresh
+# linux
+# linux-firmware
+# lua-language-server, required install for spacemacs lsp
+# lxpolkit , required for graphical login window
+# man-db
+# networkmanager
+# nm-connection-editor
+# nodejs
+# npm
+# nss-mdns
+# ntp
+# numlockx
+# obsidian
+# p7zip
+# pavucontrol
+# pcmanfm
+# pulseaudio
+# pulseaudio-alsa
+# pulseaudio-bluetooth
+# python-lsp-server , required by python-mode in Emacs
+# ranger, and don't forget all its dependencies
+# reflector
+# ripgrep
+# rust-analyzer , required for rust lsp
+# sane , required for scanner
+# sane-airscan, required for driverless wifi scanning
+# simple-scan , scanner frontend
+# sdl2
+# sdl2_image
+# smartmontools
+# sof-firmware
+# spotify-launcher
+# stow
+# system-config-printer
+# tlp
+# vim
+# wget
+# xdotool, required for autorandr to center mouse on postswitch
+# xdg-user-dirs
+# xorg-xeyes
+
+# Foreign packages (from yay or makepkg)
+#
+# cmake-language-server , required for cmake lsp in emacs
+# cpupower-gui
+# entt
+# google-chrome
+# insync
+# logseq-desktop-bin
+# mkinitcpio-numlock, and add the change to /etc/mkinitcpio.conf
+# nwg-shell
+# rofi-lbonn-wayland
+# shellcheck-bin
+# tlpui
+# wlr-randr
+# yay
+
+# Others:
+# css  lsp requires $ npm i -g vscode-css-languageserver-bin
+# html lsp requires $ npm install -g vscode-html-languageserver-bin
+# Or, these actually require $ npm install -g vscode-langservers-extracted
