@@ -122,6 +122,7 @@
 # cups.socket                          enabled         disabled
 # reflector.timer                      enabled         disabled
 # ntpd.service
+# ssh-agent.service (user service)
 
 # Explicity installed packages on 2023-11-14
 # pacman -Qeqn | sed 's/^/# /' >> arch.yml
@@ -168,6 +169,7 @@
 # ntp
 # numlockx
 # obsidian
+# openssh
 # p7zip
 # pavucontrol
 # pcmanfm
@@ -192,6 +194,7 @@
 # tlp
 # vim
 # wget
+# xclip
 # xdotool, required for autorandr to center mouse on postswitch
 # xdg-user-dirs
 # xorg-xeyes
