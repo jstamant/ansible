@@ -1,6 +1,6 @@
 # Ansible Setup
 
-This is my ansible setup for reproducing my programming/linux environment anywhere.
+This was an ansible setup I was working on for reproducing my programming/linux environment anywhere. I've since moved to NixOS and never finished this setup for reproducing my Arch machine.
 
 This is still quite early in development, but to get started, make sure that you run `pacman -Syu` and make sure you have sudo privileges enabled.
 
