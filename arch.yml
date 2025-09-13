@@ -207,8 +207,10 @@
 # google-chrome
 # insync
 # logseq-desktop-bin
+# mermaid-cli
 # mkinitcpio-numlock, and add the change to /etc/mkinitcpio.conf
 # nwg-shell
+# postman-bin
 # rofi-lbonn-wayland
 # shellcheck-bin
 # tlpui
